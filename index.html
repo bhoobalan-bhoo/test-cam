@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Camera Stream</title>
+</head>
+<body>
+<div id="video-container">
+  <video id="video" autoplay playsinline></video>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const video = document.getElementById('video');
+  const constraints = {
+    video: {
+      facingMode: 'user' // Setting facing mode to user to use the front camera if available
+    }
+  };
+
+  function handleSuccess(stream) {
+    video.srcObject = stream;
+  }
+
+  function handleError(error) {
+    alert('Error accessing camera: ' + error.message);
+    console.error('Error accessing camera:', error);
+  }
+
+  // Attempt to access the user's camera
+  navigator.mediaDevices.getUserMedia(constraints)
+    .then(handleSuccess)
+    .catch((err) => {
+      if (err.name === 'PermissionDeniedError' || err.name === 'NotAllowedError') {
+        alert('Permission to access camera was denied. Please enable camera access and refresh the page.');
+      } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+        alert('No camera devices found. Please ensure that your camera is properly connected.');
+      } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+        alert('Camera is not readable. Please ensure that your camera is not being used by another application.');
+      } else {
+        alert('Error accessing camera: ' + err.message);
+      }
+      console.error('Error accessing camera:', err);
+    });
+});
+</script>
+</body>
+</html>
